@@ -39,11 +39,11 @@ package primitives {
 		
 		private const MaxCloneCount:int = 300;
 		
-		protected var app:MBlock;
+		protected var app:mBlockRT;
 		protected var interp:Interpreter;
 		private var counter:int;
 		
-		public function Primitives(app:MBlock, interpreter:Interpreter) {
+		public function Primitives(app:mBlockRT, interpreter:Interpreter) {
 			this.app = app;
 			this.interp = interpreter;
 		}

@@ -11,7 +11,7 @@ package extensions
 	
 	import org.aswing.JOptionPane;
 	
-	import util.LogManager;
+//	import util.LogManager;
 	
 	public class JavaScriptEngine
 	{
@@ -31,7 +31,7 @@ package extensions
 				//尝试连接
 				onConnected(null);
 			}
-			LogManager.sharedManager().log("registed:"+_ext._getStatus().msg);
+			//LogManager.sharedManager().log("register: "+_ext._getStatus().msg);
 			//trace(SerialManager.sharedManager().list());
 			//_timer.start();
 		}
@@ -53,7 +53,7 @@ package extensions
 			}
 			var handler:Function = _ext[method];
 			if(null == handler){
-				trace(method + " not provide!");
+				//trace(method + " not provided!");
 				responseValue();
 				return;
 			}
@@ -64,7 +64,7 @@ package extensions
 					handler.apply(null, param);
 				}
 			}catch(error:Error) {
-				trace(error.getStackTrace());
+				//trace(error.getStackTrace());
 			}
 		}
 		/*
@@ -93,14 +93,14 @@ package extensions
 			if(_ext){
 				var dev:SerialDevice = SerialDevice.sharedDevice();
 				_ext._deviceConnected(dev);
-				LogManager.sharedManager().log("register:"+_name);
+//				LogManager.sharedManager().log("register: "+_name);
 			}
 		}
 		private function onClosed(evt:Event):void{
 			if(_ext){
 				var dev:SerialDevice = SerialDevice.sharedDevice();
 				_ext._deviceRemoved(dev);
-				LogManager.sharedManager().log("unregister:"+_name);
+				//LogManager.sharedManager().log("unregister: "+_name);
 			}
 		}
 		private function onRemoved(evt:Event):void{
@@ -146,7 +146,7 @@ package extensions
 			if(args.length < 2){
 				RemoteCallMgr.Instance.onPacketRecv();
 			}else if(args[0] == 0x80){
-				MBlock.app.runtime.mbotButtonPressed.notify(Boolean(args[1]));
+				mBlockRT.app.runtime.mbotButtonPressed.notify(Boolean(args[1]));
 			}else{
 				RemoteCallMgr.Instance.onPacketRecv(args[1]);
 			}

@@ -54,7 +54,7 @@ package cc.makeblock.interpreter
 				netExt.exec(thread, opName, argList);
 				return;
 			}
-			var ext:ScratchExtension = MBlock.app.extensionManager.extensionByName(extName);
+			var ext:ScratchExtension = mBlockRT.app.extensionManager.extensionByName(extName);
 			if(extName.toLocaleLowerCase().indexOf("microsoft cognitive services")>-1){
 				var o:* = ext.getStateVar(opName)
 				if(opName=="startVoiceRecognition"){

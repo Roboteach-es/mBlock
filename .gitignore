@@ -1,8 +1,3 @@
-*.actionScriptProperties
-/bin-debug
-/bin-release-temp
-adl.exe
-static_tips.zip
-.actionScriptProperties
-.vscode
-node_modules
+/bin*
+*.app
+.DS_Store

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<application xmlns="http://ns.adobe.com/air/application/19.0">
+	<id>es.roboteach.mblock</id>
+	<filename>mBlockRT</filename>
+	<name>
+		<text xml:lang="ES">mBlockRT </text>
+	</name>
+	<versionNumber>3.5.0</versionNumber>
+	<supportedProfiles>extendedDesktop</supportedProfiles>
+	<description>
+		<text xml:lang="ES"><![CDATA[mBlockRT es una actualización y corrección de mBlock 3.4.xx]]></text>
+	</description>
+	<copyright>Roboteach</copyright>
+
+	<initialWindow>
+		<content>mBlockRT.swf</content>
+		<width>1280</width> 
+		<height>768</height> 
+		<x>50</x>
+		<y>50</y>
+		<minSize>500 500</minSize>
+		<visible>true</visible>
+	</initialWindow>
+
+	<icon>
+		<image16x16>icons/AppIcon16.png</image16x16>
+		<image32x32>icons/AppIcon32.png</image32x32>
+		<image48x48>icons/AppIcon48.png</image48x48>
+		<image128x128>icons/AppIcon128.png</image128x128>
+	</icon>
+
+	<fileTypes> 
+		<fileType> 
+			 <name>mBlockRT.ProjectFile</name> 
+			 <extension>sb2</extension> 
+			 <description>mBlockRT fichero de proyecto</description> 
+			 <contentType>application/mblockrt.project-file</contentType> 
+			<icon>
+				<image16x16>icons/ProjectIcon16.png</image16x16>
+				<image32x32>icons/ProjectIcon32.png</image32x32>
+				<image48x48>icons/ProjectIcon48.png</image48x48>
+				<image128x128>icons/ProjectIcon128.png</image128x128>
+			</icon> 
+		 </fileType> 
+	</fileTypes>
+	<extensions>
+		<extensionID>cc.makeblock.BluetoothExt</extensionID>
+		<extensionID>cc.makeblock.AIRSerial</extensionID>
+		<extensionID>cc.makeblock.AirHID</extensionID>
+	</extensions>
+</application>

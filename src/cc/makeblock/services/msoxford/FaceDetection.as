@@ -29,7 +29,7 @@ package cc.makeblock.services.msoxford
 		}
 		public function capture():void{
 			if(_vid==null){
-				_vid = MBlock.app.stageObj().currentVideo;
+				_vid = mBlockRT.app.stageObj().currentVideo;
 			}
 			if(_vid==null){
 				return;
@@ -64,7 +64,7 @@ package cc.makeblock.services.msoxford
 				trace("no secret");
 				return;
 			}
-			MBlock.app.track("/OxfordAi/face/launch/"+_source);
+//			mBlockRT.app.track("/OxfordAi/face/launch/"+_source);
 			req.requestHeaders.push(new URLRequestHeader("Content-Type","application/octet-stream"));
 			req.requestHeaders.push(new URLRequestHeader("Ocp-Apim-Subscription-Key",secret));
 			urlloader.addEventListener(Event.COMPLETE,onRequestComplete);
@@ -74,7 +74,7 @@ package cc.makeblock.services.msoxford
 		}
 		private function onRequestComplete(evt:Event):void{
 			
-			MBlock.app.track("/OxfordAi/face/success/"+_source);
+//			mBlockRT.app.track("/OxfordAi/face/success/"+_source);
 			var ret:*;
 			if(evt.target.data.toString().indexOf("xmlns")>-1){
 				try{
@@ -102,8 +102,8 @@ package cc.makeblock.services.msoxford
 						result.push(obj);
 					}
 					if(len>0){
-						MBlock.app.extensionManager.extensionByName("Microsoft Cognitive Services").stateVars["faceResultReceived"] = result;
-						MBlock.app.runtime.faceResultReceived.notify(true);
+						mBlockRT.app.extensionManager.extensionByName("Microsoft Cognitive Services").stateVars["faceResultReceived"] = result;
+						mBlockRT.app.runtime.faceResultReceived.notify(true);
 					}
 				}catch(e:*){
 					
@@ -113,16 +113,16 @@ package cc.makeblock.services.msoxford
 			}
 			try{
 				ret = util.JSON.parse(evt.target.data);
-				var len:uint = ret.length;
-				var result:Array = [];
+				len = ret.length;
+				result = [];
 				
-				for(var i:uint=0;i<len;i++){
+				for(i=0;i<len;i++){
 					var faceAttributes_obj:Object = ret[i].faceAttributes;
-					var faceId:String = ret[i].faceId;
+					faceId = ret[i].faceId;
 					var faceRectangle_obj:Object = ret[i].faceRectangle;
 					var faceLandmarks_obj:Object = ret[i].faceLandmarks;
 					
-					var obj:Object = {};
+					obj = {};
 					obj.x = faceRectangle_obj.left;
 					obj.y = faceRectangle_obj.top;
 					obj.width = faceRectangle_obj.width;
@@ -133,8 +133,8 @@ package cc.makeblock.services.msoxford
 					result.push(obj);
 				}
 				if(len>0){
-					MBlock.app.extensionManager.extensionByName("Microsoft Cognitive Services").stateVars["faceResultReceived"] = result;
-					MBlock.app.runtime.faceResultReceived.notify(true);
+					mBlockRT.app.extensionManager.extensionByName("Microsoft Cognitive Services").stateVars["faceResultReceived"] = result;
+					mBlockRT.app.runtime.faceResultReceived.notify(true);
 				}
 			}catch(e:*){
 				
@@ -142,7 +142,7 @@ package cc.makeblock.services.msoxford
 		}
 		private function onIOError(evt:IOErrorEvent):void{
 			trace("error：",evt);
-			MBlock.app.track("/OxfordAi/face/error/"+_source);
+//			mBlockRT.app.track("/OxfordAi/face/error/"+_source);
 		}
 		private function onHttpStatus(evt:HTTPStatusEvent):void{
 			trace("Status:",evt);

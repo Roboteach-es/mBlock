@@ -50,12 +50,12 @@ import util.SharedObjectManager;
 
 public class ExtensionManager {
 
-	private var app:MBlock;
+	private var app:mBlockRT;
 	private var extensionDict:Object = new Object(); // extension name -> extension record
 	private var justStartedWait:Boolean;
 	static public const wedoExt:String = 'LEGO WeDo';
 
-	public function ExtensionManager(app:MBlock) {
+	public function ExtensionManager(app:mBlockRT) {
 		this.app = app;
 		clearImportedExtensions();
 	}
@@ -82,7 +82,7 @@ public class ExtensionManager {
 		var count:int=0;
 		for each (var ext:ScratchExtension in extensionDict) {
 			var prefix:String = ext.useScratchPrimitives ? '' : (ext.name + '.');
-			trace(count++);
+//			trace(count++);
 			for each (var spec:Array in ext.blockSpecs) {
 				if(spec.length <= 2){
 					continue;
@@ -213,7 +213,7 @@ public class ExtensionManager {
 	}
 	static public function isMakeBlockExt(extName:String):Boolean
 	{
-		var ext:Object = MBlock.app.extensionManager.findExtensionByName(extName);
+		var ext:Object = mBlockRT.app.extensionManager.findExtensionByName(extName);
 		return ext != null && ext.isMakeBlockBoard;
 	}
 	public function singleSelectExtension(name:String):void{
@@ -448,7 +448,7 @@ public class ExtensionManager {
 //								block.nextID = [];
 								block.response = retval;
 								block.requestState = 2;
-//								MBlock.app.runtime.exitRequest();
+//								mBlockRT.app.runtime.exitRequest();
 							//}
 						}
 					}
@@ -497,8 +497,8 @@ public class ExtensionManager {
 		extensionDict[extObj.extensionName] = ext;
 		parseTranslators(ext);
 //		parseAllTranslators();
-		MBlock.app.translationChanged();
-		MBlock.app.updatePalette();
+		mBlockRT.app.translationChanged();
+		mBlockRT.app.updatePalette();
 		// Update the indicator
 		for (var i:int = 0; i < app.palette.numChildren; i++) {
 			var indicator:IndicatorLight = app.palette.getChildAt(i) as IndicatorLight;
@@ -512,8 +512,8 @@ public class ExtensionManager {
 		ConnectionManager.sharedManager().onRemoved(extObj.extensionName);
 		delete extensionDict[extObj.extensionName];
 //		parseAllTranslators();
-		MBlock.app.translationChanged();
-		MBlock.app.updatePalette();
+		mBlockRT.app.translationChanged();
+		mBlockRT.app.updatePalette();
 		// Update the indicator
 		for (var i:int = 0; i < app.palette.numChildren; i++) {
 			var indicator:IndicatorLight = app.palette.getChildAt(i) as IndicatorLight;
@@ -574,7 +574,7 @@ public class ExtensionManager {
 //			if(extObj.javascriptURL) ext.javascriptURL = extObj.javascriptURL;
 //			extensionDict[extObj.extensionName] = ext;
 //		}
-//		MBlock.app.updatePalette();
+//		mBlockRT.app.updatePalette();
 	}
 
 	// -----------------------------
@@ -600,7 +600,7 @@ public class ExtensionManager {
 		if(ext.useSerial){
 			if (!SerialDevice.sharedDevice().connected) {
 				indicator.setColorAndMsg(0xE00000, Translator.map('Disconnected'));
-//				MBlock.app.topBarPart.setBluetoothTitle(false);
+//				mBlockRT.app.topBarPart.setBluetoothTitle(false);
 			}
 			else if (ext.problem != '') indicator.setColorAndMsg(0xE0E000, ext.problem);
 			else indicator.setColorAndMsg(0x00C000, ext.success);
@@ -734,7 +734,7 @@ public class ExtensionManager {
 			
 //			ext.waiting[b] = ext.nextID;
 //			b.nextID.push(ext.nextID);
-//			MBlock.app.runtime.enterRequest();
+//			mBlockRT.app.runtime.enterRequest();
 //			ext.js.requestValue(op,args,ext);
 //			if(ext.nextID>50){
 //				ext.nextID = 0;
@@ -743,7 +743,7 @@ public class ExtensionManager {
 		}
 //		if (ext.port > 0) {
 //			
-//		} else if(MBlock.app.jsEnabled) {
+//		} else if(mBlockRT.app.jsEnabled) {
 //			// call a JavaScript extension function with the given arguments
 //			b.requestState = 1;
 //			++ext.nextID;
@@ -770,9 +770,9 @@ public class ExtensionManager {
 			//url+='/Ext'+ext.nextID;
 			
 			b.requestState = 1;
-			MBlock.app.runtime.enterRequest();
+			mBlockRT.app.runtime.enterRequest();
 			ParseManager.sharedManager().extNames[ext.nextID] = ext.name;
-			var objs:Array = MBlock.app.extensionManager.specForCmd(ext.name+"."+op);
+			var objs:Array = mBlockRT.app.extensionManager.specForCmd(ext.name+"."+op);
 			var obj:Object = objs[objs.length-1];
 			obj = obj[obj.length-1];
 			if(obj!=null && obj.encode!="" && obj.encode!=null){
@@ -789,7 +789,7 @@ public class ExtensionManager {
 					b.response = '';
 				b.requestState = 2;
 				b.requestLoader = null;
-				MBlock.app.runtime.exitRequest();
+				mBlockRT.app.runtime.exitRequest();
 			}
 			var loader:URLLoader = new URLLoader();
 			loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, responseHandler);
@@ -805,7 +805,7 @@ public class ExtensionManager {
 			}
 			loader.load(new URLRequest(url));
 			
-			MBlock.app.runtime.enterRequest();
+			mBlockRT.app.runtime.enterRequest();
 		}
 	}
 
@@ -818,7 +818,7 @@ public class ExtensionManager {
 //			for each ( arg in args) {
 //				url += '/' + ((arg is String) ? escape(arg) : arg);
 //			}
-//			var objs:Array = MBlock.app.extensionManager.specForCmd(ext.name+"."+op);
+//			var objs:Array = mBlockRT.app.extensionManager.specForCmd(ext.name+"."+op);
 //			if(op.indexOf("resetAll")>-1){
 //				ParseManager.sharedManager().parse("resetAll");
 //			}

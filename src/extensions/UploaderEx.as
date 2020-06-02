@@ -42,7 +42,7 @@ package extensions
 		public function upload(filePath:String):void
 		{
 			_dialog.setText(Translator.map('Uploading'));
-			_dialog.showOnStage(MBlock.app.stage);
+			_dialog.showOnStage(mBlockRT.app.stage);
 			updateDialog();
 			var info:NativeProcessStartupInfo = new NativeProcessStartupInfo();
 			info.executable = getArduino();
@@ -53,7 +53,7 @@ package extensions
 			argList.push("--verbose", "--preserve-temp-files");
 			argList.push(filePath);
 			
-			MBlock.app.scriptsPart.appendMessage(getArduino().nativePath + " " + argList.join(" "));
+			mBlockRT.app.scriptsPart.appendMessage(getArduino().nativePath + " " + argList.join(" "));
 			
 			info.arguments = argList;
 			var process:NativeProcess = new NativeProcess();
@@ -106,14 +106,14 @@ package extensions
 		{
 			var process:NativeProcess = event.target as NativeProcess;
 			var info:String = process.standardOutput.readMultiByte(process.standardOutput.bytesAvailable, "gb2312");
-			MBlock.app.scriptsPart.appendRawMessage(info);
+			mBlockRT.app.scriptsPart.appendRawMessage(info);
 		}
 		
 		private function __onErrorData(event:ProgressEvent):void
 		{
 			var process:NativeProcess = event.target as NativeProcess;
 			var info:String = process.standardError.readMultiByte(process.standardError.bytesAvailable, "gb2312");
-			MBlock.app.scriptsPart.appendRawMessage(info);
+			mBlockRT.app.scriptsPart.appendRawMessage(info);
 		}
 	}
 }

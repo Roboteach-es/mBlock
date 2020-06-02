@@ -59,16 +59,16 @@ package cc.makeblock.mbot.uiwidgets.extensionMgr
 				sharedToolTip.setOffsets(new IntPoint(0, 0));
 			}
 		}
-		 private var dataObj:Object = new Object();
+		private var dataObj:Object = new Object();
 		private var updataObj:Object;
 		private var canUpdata:Boolean;
 		override public function setCellValue(valueObj:*) : void {
 			super.setCellValue(valueObj);
 			canUpdata = false;
-			if(ExtensionUtil.currExtArr.indexOf(valueObj)<0)
-			{
-				ExtensionUtil.currExtArr.push(valueObj);
-			}
+//			if(ExtensionUtil.currExtArr.indexOf(valueObj)<0)
+//			{
+//				ExtensionUtil.currExtArr.push(valueObj);
+//			}
 			
 			dataObj = valueObj;
 			if(ExtensionUtil.showType==0)
@@ -85,17 +85,17 @@ package cc.makeblock.mbot.uiwidgets.extensionMgr
 						break;
 					}
 				}
-			}
+			}			
 			getJLabel().clearText();
-			var valu:String = '<p><FONT FACE="Arial" SIZE="15" COLOR="#000000" LETTERSPACING="0" KERNING="0"><b>'+valueObj.name+'<b></FONT></p>'
+			var valu:String = '<p><FONT FACE="Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"><b>'+valueObj.name+'<b></FONT></p>'
 			getJLabel().setLabel(valu);
-			valu = '<a href="http://'+valueObj.authorLink+'"><FONT FACE="Arial" SIZE="12" COLOR="#0292FD" LETTERSPACING="0" KERNING="0">'+valueObj.author+'</FONT></a>'
+			valu = '<a href="http://'+valueObj.authorLink+'"><FONT FACE="Arial" SIZE="10" COLOR="#0292FD" LETTERSPACING="0" KERNING="0">'+valueObj.author+'</FONT></a>'
 			getJLabel().setLabel(valu);
 			valu = '<p><FONT FACE="Arial" SIZE="10" COLOR="#666666" LETTERSPACING="0" KERNING="0">'+valueObj.version+'</FONT></p>'
 			getJLabel().setLabel(valu);
 			
 			getSummaryLabel().clearText();
-			valu = '<p><FONT FACE="Arial" SIZE="12" COLOR="#444444" LETTERSPACING="0" KERNING="0">'+valueObj.description+'</FONT></p>'
+			valu = '<p><FONT FACE="Arial" SIZE="11" COLOR="#444444" LETTERSPACING="0" KERNING="0">'+valueObj.description+'</FONT></p>'
 			getSummaryLabel().setLabel(valu);
 			
 			if(ExtensionUtil.showType==1)
@@ -104,17 +104,17 @@ package cc.makeblock.mbot.uiwidgets.extensionMgr
 				{
 					if(valueObj.homepage.indexOf("http")>-1)
 					{
-						valu = '<a href="'+valueObj.homepage+'"><FONT FACE="Times New Roman" SIZE="12" COLOR="#0292FD">'+Translator.map("More Info")+'</FONT>&nbsp;&nbsp;&nbsp;<a href=\"event:00\"><FONT FACE="Times New Roman" SIZE="12" COLOR="#0292FD">'+Translator.map("View Source")+'</FONT></a></a>';
+						valu = '<a href="'+valueObj.homepage+'"><FONT FACE="Times New Roman" SIZE="11" COLOR="#0292FD">'+Translator.map("More Info")+'</FONT>&nbsp;&nbsp;&nbsp;<a href=\"event:00\"><FONT FACE="Times New Roman" SIZE="11" COLOR="#0292FD">'+Translator.map("View Source")+'</FONT></a></a>';
 					}
 					else
 					{
-						valu = '<a href="http://'+valueObj.homepage+'"><FONT FACE="Times New Roman" SIZE="12" COLOR="#0292FD">'+Translator.map("More Info")+'</FONT>&nbsp;&nbsp;&nbsp;<a href=\"event:00\"><FONT FACE="Times New Roman" SIZE="12" COLOR="#0292FD">'+Translator.map("View Source")+'</FONT></a></a>';
+						valu = '<a href="http://'+valueObj.homepage+'"><FONT FACE="Times New Roman" SIZE="11" COLOR="#0292FD">'+Translator.map("More Info")+'</FONT>&nbsp;&nbsp;&nbsp;<a href=\"event:00\"><FONT FACE="Times New Roman" SIZE="11" COLOR="#0292FD">'+Translator.map("View Source")+'</FONT></a></a>';
 					}
 					
 				}
 				else
 				{
-					valu = '<a href=\"event:00\"><FONT FACE="Times New Roman" SIZE="12" COLOR="#0292FD">'+Translator.map("View Source")+'</FONT></a></a>';
+					valu = '<a href=\"event:00\"><FONT FACE="Times New Roman" SIZE="11" COLOR="#0292FD">'+Translator.map("View Source")+'</FONT></a></a>';
 				}
 				
 				getSummaryLabel().setLabel(valu);
@@ -127,11 +127,11 @@ package cc.makeblock.mbot.uiwidgets.extensionMgr
 				{
 					if(valueObj.homepage.indexOf("http")>-1)
 					{
-						valu = '<a href="'+valueObj.homepage+'"><FONT FACE="Times New Roman" SIZE="12" COLOR="#0292FD">'+Translator.map("More Info")+'</FONT></a>';
+						valu = '<a href="'+valueObj.homepage+'"><FONT FACE="Times New Roman" SIZE="11" COLOR="#0292FD">'+Translator.map("More Info")+'</FONT></a>';
 					}
 					else
 					{
-						valu = '<a href="http://'+valueObj.homepage+'"><FONT FACE="Times New Roman" SIZE="12" COLOR="#0292FD">'+Translator.map("More Info")+'</FONT></a>';
+						valu = '<a href="http://'+valueObj.homepage+'"><FONT FACE="Times New Roman" SIZE="11" COLOR="#0292FD">'+Translator.map("More Info")+'</FONT></a>';
 					}
 					getSummaryLabel().setLabel(valu);
 				}
@@ -210,7 +210,7 @@ package cc.makeblock.mbot.uiwidgets.extensionMgr
 		{
 			if(ExtensionUtil.showType==0)
 			{
-				switch(hasDownloaded(dataObj,MBlock.app.extensionManager.extensionList))
+				switch(hasDownloaded(dataObj,mBlockRT.app.extensionManager.extensionList))
 				{
 					case -1:
 						//no download
@@ -280,7 +280,7 @@ package cc.makeblock.mbot.uiwidgets.extensionMgr
 		}
 		private function removeHandler(evt:MouseEvent):void
 		{
-			trace("delete？")
+//			trace("delete？")
 			ExtensionUtil.dispatcher.dispatchEvent(new Event("removeItem"));
 		}
 		private function downloadHandler(evt:MouseEvent):void
@@ -295,8 +295,8 @@ package cc.makeblock.mbot.uiwidgets.extensionMgr
 			}
 			evt.target.setEnabled(false);
 			var loader:URLLoader = new URLLoader();
-			var urlRequest:URLRequest = new URLRequest("http://www.mblock.cc/extensions/uploads/"+updataObj.download);
-			trace("urlRequest="+urlRequest.url,updataObj.name);
+			var urlRequest:URLRequest = new URLRequest("https://www.mblock.cc/extensions/uploads/"+updataObj.download);
+//			trace("urlRequest="+urlRequest.url,updataObj.name);
 			urlRequest.method = URLRequestMethod.GET;
 			loader.dataFormat = URLLoaderDataFormat.BINARY;
 			loader.load(urlRequest);
@@ -309,7 +309,7 @@ package cc.makeblock.mbot.uiwidgets.extensionMgr
 		{
 			var percent:Number = e.bytesLoaded/e.bytesTotal;
 			
-			trace(percent*100,"%")
+			//trace(percent*100,"%")
 		}
 		private function onDownloadComplete(e:Event):void
 		{
@@ -317,8 +317,8 @@ package cc.makeblock.mbot.uiwidgets.extensionMgr
 			canUpdata = false;
 			btnPanel.remove(updataBtn);	
 			ExtensionUtil.dispatcher.dispatchEvent(new Event("updateList"));
-			//MBlock.app.stage.removeChild(progressSp);
-			trace("保存完成")
+			//mBlockRT.app.stage.removeChild(progressSp);
+//			trace("保存完成")
 		}
 		private function __onViewSource(evt:AWEvent=null):void
 		{
@@ -334,7 +334,7 @@ package cc.makeblock.mbot.uiwidgets.extensionMgr
 				}
 			}*/
 			//由于主板文件夹名和s2e文件描述的名字不一样，导致查看源码找不到路径，现在是通过对比s2e里面的extensionName来确定路径  by tql 20160810
-			for each(var obj:Object in MBlock.app.extensionManager.extensionList)
+			for each(var obj:Object in mBlockRT.app.extensionManager.extensionList)
 			{
 				if(obj.extensionName.toLowerCase()==extName)
 				{

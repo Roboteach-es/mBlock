@@ -106,7 +106,7 @@ package extensions
 					close();
 				}
 				if(!_bt.isDiscovering){
-					MBlock.app.track("/OpenBluetooth");
+//					mBlockRT.app.track("/OpenBluetooth");
 					function cancel():void{
 						removeDiscoverDialogbox(d);
 						d.cancel();
@@ -114,7 +114,7 @@ package extensions
 					var d:DialogBox = new DialogBox();
 					d.addTitle(Translator.map('Discovering Bluetooth') + '...');
 					d.addButton('Cancel', cancel);
-					d.showOnStage(MBlock.app.stage);
+					d.showOnStage(mBlockRT.app.stage);
 					addDiscoverDialogbox(d);
 					_bt.beginDiscover();
 				}
@@ -219,14 +219,14 @@ package extensions
 			var d:DialogBox = new DialogBox();
 			d.addTitle(Translator.map('Connecting Bluetooth') + '...');
 			d.addButton('Close', cancel);
-			d.showOnStage(MBlock.app.stage);
+			d.showOnStage(mBlockRT.app.stage);
 			addDiscoverDialogbox(d);
 			function checkName():void{
 				if(_bt.connected){
 					LogManager.sharedManager().log("bt opened:"+btAddr);
 					_isBusy = false;
 					addBluetoothHistory();
-					MBlock.app.topBarPart.setConnectedTitle("Bluetooth");
+					mBlockRT.app.topBarPart.setConnectedTitle("Bluetooth");
 					d.setTitle(Translator.map("Bluetooth Connected"));
 				}else{
 					LogManager.sharedManager().log("bt checking:"+btAddr);
@@ -301,8 +301,8 @@ package extensions
 						d.addButton("Cancel",onClose);
 						d.fixLayout(DialogBox.VERTICAL);
 					}
-					d.x = (MBlock.app.stage.stageWidth-d.width)/2<0?0:(MBlock.app.stage.stageWidth-d.width)/2;
-					d.y = (MBlock.app.stage.stageHeight-d.height)/2<0?0:(MBlock.app.stage.stageHeight-d.height)/2;
+					d.x = (mBlockRT.app.stage.stageWidth-d.width)/2<0?0:(mBlockRT.app.stage.stageWidth-d.width)/2;
+					d.y = (mBlockRT.app.stage.stageHeight-d.height)/2<0?0:(mBlockRT.app.stage.stageHeight-d.height)/2;
 				}
 			}
 			

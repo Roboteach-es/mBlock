@@ -149,7 +149,7 @@ package extensions
 					dialog.addField("Port",100,_clientPort,true);
 					dialog.addButton(Translator.map("Cancel"),cancelNow);
 					dialog.addButton(Translator.map("Connect"),connectNow);
-					dialog.showOnStage(MBlock.app.stage);
+					dialog.showOnStage(mBlockRT.app.stage);
 				}else{
 					if(!this.connected(host.split(":")[0])){
 						this.connect(host.split(":")[0]+":"+host.split(":")[1]);
@@ -232,7 +232,7 @@ package extensions
 		public function update():void{
 			if(connected()){
 				if(!SerialManager.sharedManager().isConnected&&!HIDManager.sharedManager().isConnected&&!BluetoothManager.sharedManager().isConnected){
-					MBlock.app.topBarPart.setConnectedTitle("Network");
+					mBlockRT.app.topBarPart.setConnectedTitle("Network");
 				}
 			}
 		}
@@ -335,7 +335,7 @@ package extensions
 						//ConnectionManager.sharedManager().onOpen(evt.srcAddress+":"+evt.srcPort);
 						_list.push(wifiModule);
 						var data:ByteArray = new ByteArray();
-						data.writeUTFBytes(MBlock.app.projectName());
+						data.writeUTFBytes(mBlockRT.app.projectName());
 						//Send the datagram message
 						try{
 							datagramSocket.send( data, 0, data.length, evt.srcAddress, evt.srcPort);

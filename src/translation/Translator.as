@@ -66,7 +66,7 @@ public class Translator {
 
 	public static function initializeLanguageList():void {
 		// Get a list of language names for the languages menu from the server.
-		languages = MBlock.app.server.getLanguageList();
+		languages = mBlockRT.app.server.getLanguageList();
 		setLanguage(SharedObjectManager.sharedManager().getObject("lang",Capabilities.language=="zh-CN"?'zh_CN':(Capabilities.language=="zh-TW"?'zh_TW':'en')));
 	}
 	
@@ -81,21 +81,21 @@ public class Translator {
 		isEnglish = true;
 		setFontsFor(lang);
 		if ('en' == lang){
-			MBlock.app.translationChanged(); // there is no .po file English
+			mBlockRT.app.translationChanged(); // there is no .po file English
 		}else {
-			var data:Object = MBlock.app.server.getPOFile(lang);
+			var data:Object = mBlockRT.app.server.getPOFile(lang);
 			if (data) {
 				dictionary = data;
 				checkBlockTranslations();
 				setFontsFor(lang);
-				MBlock.app.extensionManager.parseAllTranslators();
+				mBlockRT.app.extensionManager.parseAllTranslators();
 			}
-			setTimeout(MBlock.app.translationChanged, 0);
-//			MBlock.app.translationChanged();
+			setTimeout(mBlockRT.app.translationChanged, 0);
+//			mBlockRT.app.translationChanged();
 		}
 		langChangedSignal.dispatchEvent(new Event(Event.CHANGE));
 
-		MBlock.app.server.setSelectedLang(lang);
+		mBlockRT.app.server.setSelectedLang(lang);
 	}
 	public static function getLanguage():String {
 		return SharedObjectManager.sharedManager().getObject("lang","en-US");
@@ -115,7 +115,7 @@ public class Translator {
 				dictionary = parsePOData(data);
 				setFontsFor(langName);
 				checkBlockTranslations();
-				MBlock.app.translationChanged();
+				mBlockRT.app.translationChanged();
 			}
 		}
 		var langName:String;
@@ -132,7 +132,7 @@ public class Translator {
 		var argSize:int = Math.round(0.9 * labelSize);
 		var vOffset:int = labelSize > 13 ? 1 : 0;
 		Block.setFonts(labelSize, argSize, false, vOffset);
-		MBlock.app.translationChanged();
+		mBlockRT.app.translationChanged();
 	}
 	static public function get currentFontSize():int {
 		return SharedObjectManager.sharedManager().getObject("labelSize",14);
@@ -141,7 +141,7 @@ public class Translator {
 	private static function fontSizeMenu():void {
 		var m:Menu = new Menu(setFontSize);
 		for (var i:int = 8; i < 25; i++) m.addItem(i.toString(), i);
-		m.showOnStage(MBlock.app.stage);
+		m.showOnStage(mBlockRT.app.stage);
 	}
 
 	private static function setFontsFor(lang:String):void {
@@ -331,9 +331,9 @@ public class Translator {
 		}
 		var origArgs:Array = extractArgs(spec);
 		if (!argsMatch(extractArgs(spec), extractArgs(translatedSpec))) {
-			MBlock.app.log('Block argument mismatch:');
-			MBlock.app.log('    ' + spec);
-			MBlock.app.log('    ' + translatedSpec);
+			mBlockRT.app.log('Block argument mismatch:');
+			mBlockRT.app.log('    ' + spec);
+			mBlockRT.app.log('    ' + translatedSpec);
 			delete dictionary[spec]; // remove broken entry from dictionary
 		}else{
 			if(translatedSpec != oldSpec){

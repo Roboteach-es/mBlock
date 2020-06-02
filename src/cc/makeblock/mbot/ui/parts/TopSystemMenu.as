@@ -81,34 +81,34 @@ package cc.makeblock.mbot.ui.parts
 					filePath = "mBlock/tools/hex/mega_pi.hex";
 					break;
 				case "bluetooth mode":
-					ext = MBlock.app.extensionManager.extensionByName("Auriga");
+					ext = mBlockRT.app.extensionManager.extensionByName("Auriga");
 					if(ext != null)
 						ext.js.call("switchMode", [0], null);
 					return;
 				case "ultrasonic mode":
-					ext = MBlock.app.extensionManager.extensionByName("Auriga");
+					ext = mBlockRT.app.extensionManager.extensionByName("Auriga");
 					if(ext != null)
 						ext.js.call("switchMode", [1], null);
 					return;
 				case "line follower mode":
-					ext = MBlock.app.extensionManager.extensionByName("Auriga");
+					ext = mBlockRT.app.extensionManager.extensionByName("Auriga");
 					if(ext != null)
 						ext.js.call("switchMode", [4], null);
 					return;
 				case "balance mode":
-					ext = MBlock.app.extensionManager.extensionByName("Auriga");
+					ext = mBlockRT.app.extensionManager.extensionByName("Auriga");
 					if(ext != null)
 						ext.js.call("switchMode", [2], null);
 					return;
 				default:
-					MBlock.app.scriptsPart.appendMessage("Unknow board: " + item.name);
+					mBlockRT.app.scriptsPart.appendMessage("Unknow board: " + item.name);
 					return;
 			}
 			var file:File = ApplicationManager.sharedManager().documents.resolvePath(filePath);
 			if(file.exists){
 				SerialManager.sharedManager().upgrade(file.nativePath);
 			}else{
-				MBlock.app.scriptsPart.appendMessage("File not exist: " + file.nativePath);
+				mBlockRT.app.scriptsPart.appendMessage("File not exist: " + file.nativePath);
 			}
 		}
 		
@@ -157,22 +157,22 @@ package cc.makeblock.mbot.ui.parts
 			switch(item.name)
 			{
 				case "New":
-					MBlock.app.createNewProject();
+					mBlockRT.app.createNewProject();
 					break;
 				case "Load Project":
-					MBlock.app.runtime.selectProjectFile();
+					mBlockRT.app.runtime.selectProjectFile();
 					break;
 				case "Save Project":
-					MBlock.app.saveFile();
+					mBlockRT.app.saveFile();
 					break;
 				case "Save Project As":
-					MBlock.app.exportProjectToFile();
+					mBlockRT.app.exportProjectToFile();
 					break;
 				case "Undo Revert":
-					MBlock.app.undoRevert();
+					mBlockRT.app.undoRevert();
 					break;
 				case "Revert":
-					MBlock.app.revertToOriginalProject();
+					mBlockRT.app.revertToOriginalProject();
 					break;
 				case "Import Image":
 					MediaManager.getInstance().importImage();
@@ -187,22 +187,22 @@ package cc.makeblock.mbot.ui.parts
 		{
 			switch(item.name){
 				case "Undelete":
-					MBlock.app.runtime.undelete();
+					mBlockRT.app.runtime.undelete();
 					break;
 				case "Hide stage layout":
-					MBlock.app.toggleHideStage();
+					mBlockRT.app.toggleHideStage();
 					break;
 				case "Small stage layout":
-					MBlock.app.toggleSmallStage();
+					mBlockRT.app.toggleSmallStage();
 					break;
 				case "Turbo mode":
-					MBlock.app.toggleTurboMode();
+					mBlockRT.app.toggleTurboMode();
 					break;
 				case "Arduino mode":
-					MBlock.app.changeToArduinoMode();
+					mBlockRT.app.changeToArduinoMode();
 					break;
 			}
-			MBlock.app.track("/OpenEdit");
+//			mBlockRT.app.track("/OpenEdit");
 		}
 		
 		private function __onConnect(menuItem:NativeMenuItem):void
@@ -252,7 +252,7 @@ package cc.makeblock.mbot.ui.parts
 		
 		private function __onMicrosoftSettingSelect(item:NativeMenuItem):void
 		{
-			MBlock.app.openMicrosoftCognitiveSetting(Translator.map("Microsoft Cognitive Services"));
+			mBlockRT.app.openMicrosoftCognitiveSetting(Translator.map("Microsoft Cognitive Services"));
 		}
 		private function __onLanguageSelect(evt:Event):void
 		{
@@ -268,21 +268,21 @@ package cc.makeblock.mbot.ui.parts
 		{
 			var menu:NativeMenu = evt.target as NativeMenu;
 			
-			MenuUtil.setEnable(menu.getItemByName("Undo Revert"), MBlock.app.canUndoRevert());
-			MenuUtil.setEnable(menu.getItemByName("Revert"), MBlock.app.canRevert());
+			MenuUtil.setEnable(menu.getItemByName("Undo Revert"), mBlockRT.app.canUndoRevert());
+			MenuUtil.setEnable(menu.getItemByName("Revert"), mBlockRT.app.canRevert());
 			
-			MBlock.app.track("/OpenFile");
+//			mBlockRT.app.track("/OpenFile");
 		}
 		
 		private function __onInitEditMenu(evt:Event):void
 		{
 			var menu:NativeMenu = evt.target as NativeMenu;
-			MenuUtil.setEnable(menu.getItemByName("Undelete"), MBlock.app.runtime.canUndelete());
-			MenuUtil.setChecked(menu.getItemByName("Hide stage layout"), MBlock.app.stageIsHided);
-			MenuUtil.setChecked(menu.getItemByName("Small stage layout"), !MBlock.app.stageIsHided && MBlock.app.stageIsContracted);
-			MenuUtil.setChecked(menu.getItemByName("Turbo mode"), MBlock.app.interp.turboMode);
-			MenuUtil.setChecked(menu.getItemByName("Arduino mode"), MBlock.app.stageIsArduino);
-			MBlock.app.track("/OpenEdit");
+			MenuUtil.setEnable(menu.getItemByName("Undelete"), mBlockRT.app.runtime.canUndelete());
+			MenuUtil.setChecked(menu.getItemByName("Hide stage layout"), mBlockRT.app.stageIsHided);
+			MenuUtil.setChecked(menu.getItemByName("Small stage layout"), !mBlockRT.app.stageIsHided && mBlockRT.app.stageIsContracted);
+			MenuUtil.setChecked(menu.getItemByName("Turbo mode"), mBlockRT.app.interp.turboMode);
+			MenuUtil.setChecked(menu.getItemByName("Arduino mode"), mBlockRT.app.stageIsArduino);
+//			mBlockRT.app.track("/OpenEdit");
 		}
 		
 		private function __onShowConnect(evt:Event):void
@@ -293,7 +293,7 @@ package cc.makeblock.mbot.ui.parts
 			var menu:NativeMenu = evt.target as NativeMenu;
 			var subMenu:NativeMenu = new NativeMenu();
 			
-			var enabled:Boolean = MBlock.app.extensionManager.checkExtensionEnabled();
+			var enabled:Boolean = mBlockRT.app.extensionManager.checkExtensionEnabled();
 			var arr:Array = SerialManager.sharedManager().list;
 			if(arr.length==0)
 			{
@@ -423,9 +423,9 @@ package cc.makeblock.mbot.ui.parts
 			var menuItem:NativeMenu = evt.target as NativeMenu;
 //			menuItem.removeEventListener(evt.type, __onInitExtMenu);
 //			menuItem.addEventListener(evt.type, __onShowExtMenu);
-			var list:Array = MBlock.app.extensionManager.extensionList;
+			var list:Array = mBlockRT.app.extensionManager.extensionList;
 			if(list.length==0){
-				MBlock.app.extensionManager.copyLocalFiles();
+				mBlockRT.app.extensionManager.copyLocalFiles();
 				SharedObjectManager.sharedManager().setObject("first-launch",false);
 			}
 			if(initExtMenuItemCount < 0){
@@ -434,7 +434,7 @@ package cc.makeblock.mbot.ui.parts
 			while(menuItem.numItems > initExtMenuItemCount){
 				menuItem.removeItemAt(menuItem.numItems-1);
 			}
-			list = MBlock.app.extensionManager.extensionList;
+			list = mBlockRT.app.extensionManager.extensionList;
 //			var subMenu:NativeMenu = menuItem;
 			for(var i:int=0;i<list.length;i++){
 				var extName:String = list[i].extensionName;
@@ -444,7 +444,7 @@ package cc.makeblock.mbot.ui.parts
 				var subMenuItem:NativeMenuItem = menuItem.addItem(new NativeMenuItem(Translator.map(extName)));
 				subMenuItem.name = extName;
 				subMenuItem.label = ExtensionManager.isMakeBlockExt(extName) ? "Makeblock" : extName;
-				subMenuItem.checked = MBlock.app.extensionManager.checkExtensionSelected(extName);
+				subMenuItem.checked = mBlockRT.app.extensionManager.checkExtensionSelected(extName);
 				register(extName, __onExtensions);
 			}
 		}
@@ -483,17 +483,17 @@ package cc.makeblock.mbot.ui.parts
 		private function __onShowExtMenu(evt:Event):void
 		{
 			var menuItem:NativeMenu = evt.target as NativeMenu;
-			var list:Array = MBlock.app.extensionManager.extensionList;
+			var list:Array = mBlockRT.app.extensionManager.extensionList;
 			for(var i:int=0;i<list.length;i++){
 				var extName:String = list[i].extensionName;
 				var subMenuItem:NativeMenuItem = menuItem.getItemAt(i+2);
-				subMenuItem.checked = MBlock.app.extensionManager.checkExtensionSelected(extName);
+				subMenuItem.checked = mBlockRT.app.extensionManager.checkExtensionSelected(extName);
 			}
 		}
 		*/
 		private function __onExtensions(menuItem:NativeMenuItem):void
 		{
-			MBlock.app.extensionManager.onSelectExtension(menuItem.name);
+			mBlockRT.app.extensionManager.onSelectExtension(menuItem.name);
 		}
 		
 		private function __onHelp(menuItem:NativeMenuItem):void
@@ -514,17 +514,17 @@ package cc.makeblock.mbot.ui.parts
 				}
 			}
 			
-			switch(menuItem.name)
-			{
-				case "Share Your Project":
-					MBlock.app.track("/OpenShare/");
-					break;
-				case "FAQ":
-					MBlock.app.track("/OpenFaq/");
-					break;
-				default:
-					MBlock.app.track("/OpenHelp/"+menuItem.data.@key);
-			}
+//			switch(menuItem.name)
+//			{
+//				case "Share Your Project":
+//					mBlockRT.app.track("/OpenShare/");
+//					break;
+//				case "FAQ":
+//					mBlockRT.app.track("/OpenFaq/");
+//					break;
+//				default:
+//					mBlockRT.app.track("/OpenHelp/"+menuItem.data.@key);
+//			}
 			
 			switch(menuItem.data.@key.toString()){
 				case "check_app_update":

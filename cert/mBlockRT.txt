@@ -1,0 +1,6 @@
+Certificado
+-----------
+mBlockRT.p12
+mblock-kk
+
+adt -certificate -cn roboteach.es 2048-RSA mBlockRT.p12 mblock-kk

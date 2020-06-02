@@ -61,14 +61,14 @@ package cc.makeblock.util
 		{
 			var scale:Number = 3;
 			var bmd:BitmapData = new BitmapData(
-				MBlock.app.stage.stageWidth*scale,
-				MBlock.app.stage.stageHeight*scale,true
+				mBlockRT.app.stage.stageWidth*scale,
+				mBlockRT.app.stage.stageHeight*scale,true
 			);
 			var matrix:Matrix = new Matrix();
 			matrix.scale(scale,scale);
-			MBlock.app.scaleX = MBlock.app.scaleY = scale;
-			bmd.drawWithQuality(MBlock.app, matrix, null, null, null, false, StageQuality.BEST);
-			MBlock.app.scaleX = MBlock.app.scaleY = 1;
+			mBlockRT.app.scaleX = mBlockRT.app.scaleY = scale;
+			bmd.drawWithQuality(mBlockRT.app, matrix, null, null, null, false, StageQuality.BEST);
+			mBlockRT.app.scaleX = mBlockRT.app.scaleY = 1;
 			var jpeg:ByteArray = bmd.encode(bmd.rect, new PNGEncoderOptions());
 			bmd.dispose();
 			var now:Date = new Date();

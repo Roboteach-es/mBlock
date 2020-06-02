@@ -12,7 +12,6 @@ package cc.makeblock.mbot.uiwidgets.extensionMgr
 	import cc.makeblock.mbot.uiwidgets.extensionMgr.DefaultListCell;
 	import cc.makeblock.mbot.util.PopupUtil;
 	
-
 	import org.aswing.ASColor;
 	import org.aswing.ASFont;
 	import org.aswing.AsWingConstants;
@@ -25,6 +24,7 @@ package cc.makeblock.mbot.uiwidgets.extensionMgr
 	import org.aswing.JLabel;
 	import org.aswing.JList;
 	import org.aswing.JPanel;
+	import org.aswing.JScrollPane;
 	import org.aswing.JTextField;
 	import org.aswing.SoftBoxLayout;
 	import org.aswing.SolidBackground;
@@ -45,19 +45,20 @@ package cc.makeblock.mbot.uiwidgets.extensionMgr
 		private var installedBtn:JButton;
 		private var searchLabel:JLabel;
 		private var defalutSearchTxt:String = "                                                 ";
-
+		private var scrollPane:JScrollPane;
 		private var searchTimer:Timer = new Timer(1000,1);
 		
 		public function ExtensionMgrFrame(owner:*=null)
 		{
 			super(owner, "Extension Manager", true);
-			extList = new JList(null, new DefaultListTextCellFactory(DefaultListCell, true, true, 50));
+			extList = new JList(null, new DefaultListTextCellFactory(DefaultListCell, true, true, 58));
 			extList.setBackgroundDecorator(new SolidBackground(new ASColor(0xFFFFFF)));
-
 			btnList = new JPanel(new SoftBoxLayout(SoftBoxLayout.X_AXIS, 190, SoftBoxLayout.CENTER));
 			
 			btnAdd = new JButton("add extension");
-			setBtnStyle(btnAdd);
+//			setBtnStyle(btnAdd);
+			btnAdd.setPreferredSize(new IntDimension(150, 28));
+			btnAdd.setFont(new ASFont("Tahoma",15));
 			/*btnRemove = new JButton("remove extension");
 			setBtnStyle(btnRemove);*/
 			
@@ -91,9 +92,12 @@ package cc.makeblock.mbot.uiwidgets.extensionMgr
 			getContentPane().append(northList,BorderLayout.NORTH);
 			
 			
-			getContentPane().append(extList);
+			scrollPane = new JScrollPane();
+			scrollPane.append(extList);
+			getContentPane().append(scrollPane, BorderLayout.CENTER);
+
 			getContentPane().append(bottomWrapper, BorderLayout.SOUTH);
-			
+
 			pack();
 			setSizeWH(530, 500);
 			addEvents();
@@ -157,12 +161,11 @@ package cc.makeblock.mbot.uiwidgets.extensionMgr
 			extList.clearSelection();
 			availableBtn.setSelected(true);
 			installedBtn.setSelected(false);
-			
-			ExtensionUtil.checkAvailExtList(function():void{
+			ExtensionUtil.checkAvailExtList(function():void
+			{
 				updateList();
-				
-				
-			})
+				scrollPane.getVerticalScrollBar().setValue(0);
+			});
 		}
 		private function showInstalledExtension(evt:AWEvent):void
 		{
@@ -174,6 +177,7 @@ package cc.makeblock.mbot.uiwidgets.extensionMgr
 			availableBtn.setSelected(false);
 			installedBtn.setSelected(true);
 			updateList();
+			scrollPane.getVerticalScrollBar().setValue(0);
 		}
 		private function onFocusIn(e:FocusEvent):void
 		{
@@ -228,18 +232,20 @@ package cc.makeblock.mbot.uiwidgets.extensionMgr
 			{
 				ExtensionUtil.showType = 0;
 				extList.setListData(ExtensionUtil.getAvailableList());
+				ExtensionUtil.currExtArr = ExtensionUtil.getAvailableList();
 			}
 			else if(installedBtn.isSelected())
 			{
 				ExtensionUtil.showType = 1;
 				extList.setListData(getExtNameList());
+				ExtensionUtil.currExtArr = getExtNameList();
 			}
 		}
 		
 		static private function getExtNameList():Array
 		{
 			var result:Array = [];
-			for each(var ext:Object in MBlock.app.extensionManager.extensionList){
+			for each(var ext:Object in mBlockRT.app.extensionManager.extensionList){
 				var author:String = ext.author?ext.author.substr(0,ext.author.indexOf("(")):"";
 				var authorLink:String = ext.author?ext.author.match(/\(.+\)/):"";
 				authorLink = authorLink && authorLink.length>0?authorLink.substring(1,authorLink.length-1):"";
@@ -263,22 +269,18 @@ package cc.makeblock.mbot.uiwidgets.extensionMgr
 			updateList();
 			
 			setTitle(Translator.map("Manage Extensions"));
-			
-			btnAdd.setText(Translator.map("Add Extension"));
-			
+			btnAdd.setText(Translator.map("Add Extension"));			
 			availableBtn.setText(Translator.map("Available"));
 			installedBtn.setText(Translator.map("Installed"));
-			
 			searchLabel.setText(Translator.map("Search"));
-			
 			//btnRemove.setText(Translator.map("Remove Extension"));
 		}
 		
-		static private function setBtnStyle(btn:JButton):void
-		{
-			btn.setPreferredSize(new IntDimension(150, 28));
-			btn.setFont(new ASFont("微软雅黑",14));
-			btn.setForeground(new ASColor(0x424242));
-		}
+//		static private function setBtnStyle(btn:JButton):void
+//		{
+//			btn.setPreferredSize(new IntDimension(150, 28));
+//			btn.setFont(new ASFont("微软雅黑",14));
+//			btn.setForeground(new ASColor(0x424242));
+//		}
 	}
 }

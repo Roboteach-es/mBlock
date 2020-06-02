@@ -56,7 +56,7 @@ package extensions
 					break;
 				}
 				case "driver":{
-					MBlock.app.track("/OpenSerial/InstallDriver");
+//					mBlockRT.app.track("/OpenSerial/InstallDriver");
 					var fileDriver:File;
 					if(ApplicationManager.sharedManager().system==ApplicationManager.MAC_OS){
 //						navigateToURL(new URLRequest("https://github.com/Makeblock-official/Makeblock-USB-Driver"));
@@ -82,24 +82,24 @@ package extensions
 					var isConnectCmd:Boolean = false;
 					
 					if(name.indexOf("serial_")>-1){
-						MBlock.app.track("/Connect/Serial");
+//						mBlockRT.app.track("/Connect/Serial");
 						isConnectCmd = true;
 						SerialManager.sharedManager().connect(name.split("serial_").join(""));
 					}
 					if(name.indexOf("bt_")>-1){
-						MBlock.app.track("/Connect/Bluetooth");
+//						mBlockRT.app.track("/Connect/Bluetooth");
 						isConnectCmd = true;
 						BluetoothManager.sharedManager().connect(name.split("bt_").join(""));
 					}
 					if(name.indexOf("net_")>-1){
-						MBlock.app.track("/Connect/Net");
+//						mBlockRT.app.track("/Connect/Net");
 						isConnectCmd = true;
 						SocketManager.sharedManager().probe(name.split("net_")[1]);
 					}
 					
 					if(isConnectCmd) {	// collect data on what type of board it connected to
 						var boardName:String = DeviceManager.sharedManager().currentBoard;
-						MBlock.app.track("/ConnectBoard/"+boardName);
+//						mBlockRT.app.track("/ConnectBoard/"+boardName);
 						
 					}
 				}
@@ -123,12 +123,12 @@ package extensions
 		public function onClose(port:String):void{
 			SerialDevice.sharedDevice().clear(port);
 			if(!SerialDevice.sharedDevice().connected){
-				MBlock.app.topBarPart.setDisconnectedTitle();
+				mBlockRT.app.topBarPart.setDisconnectedTitle();
 			}else{
 				if(SerialManager.sharedManager().isConnected||HIDManager.sharedManager().isConnected||BluetoothManager.sharedManager().isConnected){
-					MBlock.app.topBarPart.setConnectedTitle("Serial Port");
+					mBlockRT.app.topBarPart.setConnectedTitle("Serial Port");
 				}else{
-					MBlock.app.topBarPart.setConnectedTitle("Network");
+					mBlockRT.app.topBarPart.setConnectedTitle("Network");
 				}
 			}
 			BlockInterpreter.Instance.stopAllThreads();
@@ -151,7 +151,7 @@ package extensions
 		
 		public function onReceived(bytes:ByteArray):void{
 			_bytes = bytes;
-			MBlock.app.scriptsPart.onSerialDataReceived(bytes);
+			mBlockRT.app.scriptsPart.onSerialDataReceived(bytes);
 			this.dispatchEvent(new Event(Event.CHANGE));
 		}
 		public function sendBytes(bytes:ByteArray):void{

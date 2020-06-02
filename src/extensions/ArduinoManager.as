@@ -28,7 +28,7 @@ package extensions
 	{
 		
 		private static var _instance:ArduinoManager;
-		public var _scratch:MBlock;
+		public var _scratch:mBlockRT;
 		public var jsonObj:Object;
 		
 		public var hexCode:String;
@@ -238,10 +238,10 @@ void updateVar(char * varName,double * var)
 			if(File.applicationStorageDirectory.exists){
 				File.applicationStorageDirectory.deleteDirectory(true);
 			}
-			PopupUtil.showConfirm(Translator.map("Restart mBlock?"),MBlock.app.restart);
+			PopupUtil.showConfirm(Translator.map("Restart mBlock?"),mBlockRT.app.restart);
 		}
 		
-		public function setScratch(scratch:MBlock):void{
+		public function setScratch(scratch:mBlockRT):void{
 			_scratch = scratch;
 		}
 		/*
@@ -393,7 +393,7 @@ void updateVar(char * varName,double * var)
 		}
 		private function parseDoUntil(blk:Object):String{
 			var initCode:CodeBlock = getCodeBlock(blk[1]);
-			var untilCode:String=StringUtil.substitute("while(!({0}))\n{\n_loop();\n",initCode.type=="obj"?initCode.code.code:initCode.code);
+			var untilCode:String=StringUtil.substitute("while(!({0}))\n{\n",initCode.type=="obj"?initCode.code.code:initCode.code);
 			if(blk[2]!=null){
 				for(var i:int=0;i<blk[2].length;i++){
 					var b:Object = blk[2][i]
@@ -401,7 +401,7 @@ void updateVar(char * varName,double * var)
 					untilCode+=cBlk.type=="obj"?cBlk.code.code:cBlk.code;
 				}
 			}
-			untilCode+="}\n";
+			untilCode+="_loop();\n}\n";
 			return (untilCode);
 		}
 		private function parseCall(blk:Object):String{
@@ -583,7 +583,7 @@ void updateVar(char * varName,double * var)
 				
 			}else{
 				hasUnknownCode = true;
-				trace("Unknow Module:"+modtype)
+//				trace("Unknow Module:"+modtype)
 			}
 			var codeObj:Object = {setup:setupcode,work:workcode,def:defcode,inc:inccode,loop:loopcode};		
 			return codeObj;
@@ -795,12 +795,12 @@ void updateVar(char * varName,double * var)
 				//				code = new CodeObj(getModule(blk)["code"]["work"]);
 				//			}
 			else{
-				var objs:Array = MBlock.app.extensionManager.specForCmd(blk[0]);
+				var objs:Array = mBlockRT.app.extensionManager.specForCmd(blk[0]);
 				if(objs!=null){
 					var obj:Object = objs[objs.length-1];
 					obj = obj[obj.length-1];
 					if(typeof obj == "object"){
-						var ext:ScratchExtension = MBlock.app.extensionManager.extensionByName(blk[0].split(".")[0]);
+						var ext:ScratchExtension = mBlockRT.app.extensionManager.extensionByName(blk[0].split(".")[0]);
 						var codeObj:Object = {code:{setup:substitute(obj.setup,blk as Array,ext),work:substitute(obj.work,blk as Array,ext),def:substitute(obj.def,blk as Array,ext),inc:substitute(obj.inc,blk as Array,ext),loop:substitute(obj.loop,blk as Array,ext)}};	
 						if(!availableBlock(codeObj)){
 							if(ext!=null){
@@ -918,7 +918,7 @@ void updateVar(char * varName,double * var)
 			var isArduinoCode:Boolean = false;
 			for(var i:int;i<blks.length;i++){
 				var b:Object = blks[i];
-				var objs:Array = MBlock.app.extensionManager.specForCmd(blks[0]);
+				var objs:Array = mBlockRT.app.extensionManager.specForCmd(blks[0]);
 				if(objs!=null){
 					var obj:Object = objs[objs.length-1];
 					obj = obj[obj.length-1];
@@ -938,8 +938,8 @@ void updateVar(char * varName,double * var)
 					ccode_pointer="setup";
 					isArduinoCode = true;
 					
-					var objs:Array = MBlock.app.extensionManager.specForCmd(op);
-					var ext:ScratchExtension = MBlock.app.extensionManager.extensionByName(op.split(".")[0]);
+					var objs:Array = mBlockRT.app.extensionManager.specForCmd(op);
+					var ext:ScratchExtension = mBlockRT.app.extensionManager.extensionByName(op.split(".")[0]);
 					if(ext!=null){
 						if(srcDocuments.indexOf(ext.srcPath)==-1){
 							srcDocuments.push(ext.srcPath);
@@ -1036,7 +1036,7 @@ void updateVar(char * varName,double * var)
 				parseScripts(objs.scripts);
 			}
 			ccode_func+=buildFunctions();
-			ccode_setup = hackVaribleWithPinMode(ccode_setup);
+//			ccode_setup = hackVaribleWithPinMode(ccode_setup);
 			var retcode:String = codeTemplate.replace("//setup",ccode_setup).replace("//loop", ccode_loop).replace("//define", ccode_def).replace("//include", ccode_inc).replace("//function",ccode_func);
 			retcode = retcode.replace("//_loop", ccode_loop2);
 			retcode = buildSerialParser(retcode);
@@ -1069,40 +1069,43 @@ void updateVar(char * varName,double * var)
 		// HACK: 在Arduino模式下，如果你定义一个变量，设置一个变量，并对其进行IO操作，
 		// 该变量会在pinMode语句之后被设置。
 		// 这会导致pinMode语句中变量未初始化的问题。
-		private function hackVaribleWithPinMode(originalCode:String):String
-		{
-			var lines:Array= originalCode.split("\n");
-			var collectedPinModes:Array = [];
-			var line:String;
-			// collect all pinMode commands
-			for(var i:int=0; i<lines.length; i++) {
-				line = lines[i];
-				if( line.indexOf("pinMode") != -1 || line.indexOf("// init pin") != -1 ) {
-					var sliced:Array = lines.splice(i, 1);
-					collectedPinModes = collectedPinModes.concat(sliced);
-					i = i-1;
-				}
-			}
-			
-			if(collectedPinModes.length == 0){
-				return originalCode;
-			}
-			
-			// put pinMode command just before io commands
-			for(i=0; i<lines.length; i++) {
-				line = lines[i];
-				if(line.indexOf("digitalWrite")!=-1 || line.indexOf("digitalRead")!=-1 || line.indexOf("pulseIn")!=-1 || 
-					line.indexOf("if(")!=-1 || line.indexOf("for(")!=-1 || line.indexOf("while(")!=-1 || 
-					line.indexOf("analogWrite")!=-1 || line.indexOf("analogWrite")!=-1 || line.indexOf("// write to")!=-1) {
-					break;
-				}
-			}
-			var linesBefore:Array = lines.splice(0, i);
-			lines = linesBefore.concat(collectedPinModes, lines);
-				
-			var joinedLines:String = lines.join("\n");
-			return joinedLines;
-		}
+		// HACK: In Arduino mode, if you define a variable, set a variable, and IO on it,
+		// The variable is set after the pinMode statement.
+		// This can cause problems where variables are not initialized in the pinMode statement.
+//		private function hackVaribleWithPinMode(originalCode:String):String
+//		{
+//			var lines:Array= originalCode.split("\n");
+//			var collectedPinModes:Array = [];
+//			var line:String;
+//			// collect all pinMode commands
+//			for(var i:int=0; i<lines.length; i++) {
+//				line = lines[i];
+//				if( line.indexOf("pinMode") != -1 || line.indexOf("// init pin") != -1 ) {
+//					var sliced:Array = lines.splice(i, 1);
+//					collectedPinModes = collectedPinModes.concat(sliced);
+//					i = i-1;
+//				}
+//			}
+//			
+//			if(collectedPinModes.length == 0){
+//				return originalCode;
+//			}
+//			
+//			// put pinMode command just before io commands
+//			for(i=0; i<lines.length; i++) {
+//				line = lines[i];
+//				if(line.indexOf("digitalWrite")!=-1 || line.indexOf("digitalRead")!=-1 || line.indexOf("pulseIn")!=-1 || 
+//					line.indexOf("if(")!=-1 || line.indexOf("for(")!=-1 || line.indexOf("while(")!=-1 || 
+//					line.indexOf("analogWrite")!=-1 || line.indexOf("analogWrite")!=-1 || line.indexOf("// write to")!=-1) {
+//					break;
+//				}
+//			}
+//			var linesBefore:Array = lines.splice(0, i);
+//			lines = linesBefore.concat(collectedPinModes, lines);
+//				
+//			var joinedLines:String = lines.join("\n");
+//			return joinedLines;
+//		}
 		
 		private function parseScripts(scripts:Object):Boolean
 		{
@@ -1652,7 +1655,7 @@ void move(int direction, int speed)
 		//*/
 		private function get projectDocumentName():String{
 			var now:Date = new Date;
-			var pName:String = MBlock.app.projectName().split(" ").join("").split("(").join("").split(")").join("");
+			var pName:String = mBlockRT.app.projectName().split(" ").join("").split("(").join("").split(")").join("");
 			//用正则表达式来过滤非法字符
 			var reg:RegExp = /[^A-z0-9]|^_/g;
 			pName = pName.replace(reg,"_");
@@ -1698,7 +1701,7 @@ void move(int direction, int speed)
 				dialog.addButton("Cancel",onCancel);
 				dialog.addButton("Set Path",onSetPath);
 				dialog.addButton("Download",onDownload);
-				dialog.showOnStage(MBlock.app.stage);
+				dialog.showOnStage(mBlockRT.app.stage);
 				return "Arduino IDE not found.";
 			}
 			*/
@@ -1815,7 +1818,7 @@ void move(int direction, int speed)
 				dialog.addButton("Cancel",onCancel);
 				dialog.addButton("Set Path",onSetPath);
 				dialog.addButton("Download",onDownload);
-				dialog.showOnStage(MBlock.app.stage);
+				dialog.showOnStage(mBlockRT.app.stage);
 				return "Arduino IDE not found.";
 			}
 			*/
@@ -2182,8 +2185,8 @@ void move(int direction, int speed)
 			process.addEventListener(NativeProcessExitEvent.EXIT, onExit);
 			if(nativeWorkList.length>0 && compileErr==false){
 				var nativeProcessStartupInfo:NativeProcessStartupInfo = nativeWorkList.shift()
-				MBlock.app.scriptsPart.appendMessage(nativeProcessStartupInfo.executable.nativePath)
-				MBlock.app.scriptsPart.appendMessage(nativeProcessStartupInfo.arguments.toString())
+				mBlockRT.app.scriptsPart.appendMessage(nativeProcessStartupInfo.executable.nativePath)
+				mBlockRT.app.scriptsPart.appendMessage(nativeProcessStartupInfo.arguments.toString())
 				process.start(nativeProcessStartupInfo); 
 			}else if(nativeWorkList.length==0){
 				// todo: is there a better way to check success of make??
@@ -2199,7 +2202,7 @@ void move(int direction, int speed)
 			/*
 			var output:String = process.standardOutput.readUTFBytes(process.standardOutput.bytesAvailable)
 			var date:Date = new Date;
-			MBlock.app.scriptsPart.appendMessage(""+(date.month+1)+"-"+date.date+" "+date.hours+":"+date.minutes+": Got: "+output); 
+			mBlockRT.app.scriptsPart.appendMessage(""+(date.month+1)+"-"+date.date+" "+date.hours+":"+date.minutes+": Got: "+output); 
 			*/
 		}
 		
@@ -2220,10 +2223,10 @@ void move(int direction, int speed)
 			isUploading = false;
 			var date:Date = new Date;
 			
-			MBlock.app.scriptsPart.appendMessage(""+(date.month+1)+"-"+date.date+" "+date.hours+":"+date.minutes+": Process exited with "+event.exitCode);
+			mBlockRT.app.scriptsPart.appendMessage(""+(date.month+1)+"-"+date.date+" "+date.hours+":"+date.minutes+": Process exited with "+event.exitCode);
 			numOfSuccess++;
 			if(event.exitCode > 0){
-				MBlock.app.scriptsPart.appendMsgWithTimestamp(errorText, true);
+				mBlockRT.app.scriptsPart.appendMsgWithTimestamp(errorText, true);
 				errorText = null;
 			}
 			if(compileErr == false){

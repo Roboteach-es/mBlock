@@ -32,10 +32,10 @@ package cc.makeblock.interpreter
 			blockList.push.apply(null, converter.printBlockList(block));
 			var allBlockOp:Array = [];
 			getAllBlocksOp(blockList,allBlockOp);
-			for(var i:int=0;i<allBlockOp.length;i++)
-			{
-				MBlock.app.track("/blocks/"+allBlockOp[i]);
-			}
+//			for(var i:int=0;i<allBlockOp.length;i++)
+//			{
+//				mBlockRT.app.track("/blocks/"+allBlockOp[i]);
+//			}
 //			trace("begin==================");
 //			trace(JSON.stringify(blockList));
 //			var codeList:Array = realInterpreter.compile(blockList);

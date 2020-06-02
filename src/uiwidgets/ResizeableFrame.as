@@ -113,9 +113,9 @@ public class ResizeableFrame extends Sprite implements DragClient {
 	}
 
 	public function mouseDown(evt:MouseEvent):void {
-		if ((root is MBlock) && !(root as MBlock).editMode) return;
+		if ((root is mBlockRT) && !(root as mBlockRT).editMode) return;
 		if (resizer && resizer.hitTestPoint(evt.stageX, evt.stageY)) {
-			MBlock(root).gh.setDragClient(this, evt);
+			mBlockRT(root).gh.setDragClient(this, evt);
 		}
 	}
 

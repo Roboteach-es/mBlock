@@ -100,7 +100,7 @@ public class ScriptsPart extends UIPart {
 	
 	private var arduinoCodeText:String = "";
 	
-	public function ScriptsPart(app:MBlock) {
+	public function ScriptsPart(app:mBlockRT) {
 		this.app = app;
 
 		addChild(shape = new Shape());
@@ -509,7 +509,7 @@ public class ScriptsPart extends UIPart {
 
 	public function updatePalette():void {
 		selector.updateTranslation();
-		if(!MBlock.app.stageIsArduino && MBlock.app.viewedObj() is ScratchStage){
+		if(!mBlockRT.app.stageIsArduino && mBlockRT.app.viewedObj() is ScratchStage){
 			if(selector.selectedCategory == Specs.motionCategory){
 				selector.selectedCategory = Specs.looksCategory;
 			}

@@ -1,5 +1,5 @@
 package {
-	import com.google.analytics.GATracker;
+//	import com.google.analytics.GATracker;
 	
 	import flash.desktop.NativeApplication;
 	import flash.desktop.NativeProcess;
@@ -10,6 +10,7 @@ package {
 	import flash.display.StageAlign;
 	import flash.display.StageDisplayState;
 	import flash.display.StageScaleMode;
+	import flash.display.NativeWindowDisplayState;
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
@@ -95,13 +96,13 @@ package {
 	import watchers.ListWatcher;
 
 	[SWF(frameRate="30")]
-	public class MBlock extends Sprite {
+	public class mBlockRT extends Sprite {
 		// Version
 		private static var vxml:XML = NativeApplication.nativeApplication.applicationDescriptor; 
 		private static var xmlns:Namespace = new Namespace(vxml.namespace());
 	
 		public static const versionString:String = 'v'+vxml.xmlns::versionNumber;
-		public static var app:MBlock; // static reference to the app, used for debugging
+		public static var app:mBlockRT; // static reference to the app, used for debugging
 	
 		// Display modes
 		public var editMode:Boolean; // true when project editor showing, false when only the player is showing
@@ -146,11 +147,11 @@ package {
 		public var imagesPart:ImagesPart;
 		protected var soundsPart:SoundsPart;
 		protected var stagePart:StagePart;
-		private var ga:GATracker;
+//		private var ga:GATracker;
 		private var tabsPart:TabsPart;
 		private var _welcomeView:Loader;
 		private var _currentVer:String = "05.05.001";
-		public function MBlock(){
+		public function mBlockRT(){
 			app = this;
 			addEventListener(Event.ADDED_TO_STAGE,initStage);
 			loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, __onError);
@@ -159,7 +160,7 @@ package {
 //			trace(DESParser.encryptDES("123456",'212ea29742574cae8add9ad79abcfe4a'));//speech
 //			trace(DESParser.encryptDES("123456",'2a71aa9ef2fc478e8e35b13ca65d9e3f'));//emotion
 //			trace(DESParser.encryptDES("123456",'d30bb3fa0e40461eaf1d0b11b609a75a'));//text
-			SharedObjectManager.sharedManager().loadRemoteConfig();
+//			SharedObjectManager.sharedManager().loadRemoteConfig();
 		}
 		static private var errorFlag:Boolean;
 		private function __onError(evt:UncaughtErrorEvent):void
@@ -189,14 +190,14 @@ package {
 			UIManager.setLookAndFeel(new MyLookAndFeel());
 			AppTitleMgr.Instance.init(stage.nativeWindow);
 //			ApplicationManager.sharedManager().isCatVersion = NativeApplication.nativeApplication.applicationDescriptor.toString().indexOf("猫友")>-1;
-			ga = new GATracker(this,"UA-54268669-1","AS3",false);
-			track("/app/launch");
+//			ga = new GATracker(this,"UA-54268669-1","AS3",false);
+//			track("/app/launch");
 			new InvokeMgr();
 			stage.nativeWindow.addEventListener(Event.CLOSING,onExiting);
 			AppUpdater.getInstance().start();
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
-			
+
 			if(SharedObjectManager.sharedManager().available("labelSize")){
 				var labelSize:int = SharedObjectManager.sharedManager().getObject("labelSize") as int;
 				var argSize:int = Math.round(0.9 * labelSize);
@@ -247,7 +248,7 @@ package {
 			if(!SharedObjectManager.sharedManager().getObject("mblock-first-launch",false))
 			{
 				SharedObjectManager.sharedManager().setObject("mblock-first-launch",true);
-				ga.trackPageview(ApplicationManager.sharedManager().isCatVersion?"/myh/":"/") + "/mblock-first-launch";
+//				ga.trackPageview(ApplicationManager.sharedManager().isCatVersion?"/myh/":"/") + "/mblock-first-launch";
 			}
 			if(!SharedObjectManager.sharedManager().getObject(versionString+".0."+_currentVer,false)){
 				//SharedObjectManager.sharedManager().clear();
@@ -259,6 +260,9 @@ package {
 				//SharedObjectManager.sharedManager().setObject("board","mbot_uno");
 			}
 			//VersionManager.sharedManager().start(); //在线更新资源文件
+			if(SharedObjectManager.sharedManager().getObject("maximized",true)){
+				stage.nativeWindow.maximize();
+			}
 			if(SharedObjectManager.sharedManager().getObject("first-launch",true)){
 				SharedObjectManager.sharedManager().setObject("first-launch",false);
 				openWelcome();
@@ -280,7 +284,7 @@ package {
 				{
 					if(value==JOptionPane.YES)
 					{
-						MBlock.app.runtime.selectedProjectFile(autoProjectFile,deleteAutoProjectFile);
+						mBlockRT.app.runtime.selectedProjectFile(autoProjectFile,deleteAutoProjectFile);
 					}
 					else
 					{
@@ -331,11 +335,11 @@ package {
 			setTimeout(addChild, 500, _welcomeView);
 		}
 		
-		public function track(msg:String):void{
-			ga.trackPageview(
-				(ApplicationManager.sharedManager().isCatVersion?"/myh/":"/") + MBlock.versionString + msg
-			);
-		}
+//		public function track(msg:String):void{
+//			ga.trackPageview(
+//				(ApplicationManager.sharedManager().isCatVersion?"/myh/":"/") + mBlockRT.versionString + msg
+//			);
+//		}
 		
 		protected function initTopBarPart():void {
 			topBarPart = new TopBarPart(this);
@@ -353,11 +357,11 @@ package {
 		public function closeTips():void {}
 		public function reopenTips():void {}
 	
-		public function getMediaLibrary(app:MBlock, type:String, whenDone:Function):MediaLibrary {
+		public function getMediaLibrary(app:mBlockRT, type:String, whenDone:Function):MediaLibrary {
 			return new MediaLibrary(app, type, whenDone);
 		}
 	
-		public function getMediaPane(app:MBlock, type:String):MediaPane {
+		public function getMediaPane(app:mBlockRT, type:String):MediaPane {
 			return new MediaPane(app, type);
 		}
 	
@@ -376,10 +380,11 @@ package {
 			}
 			else
 			{
+				SharedObjectManager.sharedManager().setObject("maximized",(stage.nativeWindow.displayState == NativeWindowDisplayState.MAXIMIZED));
 				SerialManager.sharedManager().disconnect();
 				HIDManager.sharedManager().disconnect();
 			}
-			MBlock.app.gh.mouseUp(new MouseEvent(MouseEvent.MOUSE_UP));
+			mBlockRT.app.gh.mouseUp(new MouseEvent(MouseEvent.MOUSE_UP));
 			
 			
 		}
@@ -389,7 +394,7 @@ package {
 			SerialManager.sharedManager().disconnect();
 			HIDManager.sharedManager().disconnect();
 			NativeApplication.nativeApplication.exit();
-			track("/app/exit");
+//			track("/app/exit");
 			LogManager.sharedManager().save();
 		}
 		
@@ -467,7 +472,7 @@ package {
 				setEditMode(true);
 			}
 			
-			track(enterPresentation?"/enterFullscreen":"/enterNormal");
+//			track(enterPresentation?"/enterFullscreen":"/enterNormal");
 			stage.displayState = enterPresentation ? StageDisplayState.FULL_SCREEN_INTERACTIVE : StageDisplayState.NORMAL;
 			
 			for each (var o:ScratchObj in stagePane.allObjects()) o.applyFilters();
@@ -1024,7 +1029,7 @@ package {
 		}
 		public function restart(value:int):void
 		{
-			trace("重启"+value)
+//			trace("重启"+value)
 			if(value==JOptionPane.YES)
 			{
 				var file:File = new File(File.applicationDirectory.nativePath);
@@ -1107,7 +1112,7 @@ package {
 				SharedObjectManager.sharedManager().setObject("keyOCR-user",keyOCR);
 				SharedObjectManager.sharedManager().setObject("keySpeaker-user",keySpeaker);
 				SharedObjectManager.sharedManager().setObject("keySpeech-user",keySpeech); 
-				MBlock.app.track("/OxfordAi/setting/save");
+//				mBlockRT.app.track("/OxfordAi/setting/save");
 			}); 
 			dialogBox.setTitle(msg+" "+Translator.map("API Key"));
 			dialogBox.addField(Translator.toHeadUpperCase(Translator.map("face")),300,SharedObjectManager.sharedManager().getObject("keyFace-user",""),true);
@@ -1119,7 +1124,7 @@ package {
 			dialogBox.addText(Translator.map("For More Information"));
 			dialogBox.addAcceptCancelButtons('OK');
 			dialogBox.showOnStage(stage);
-			MBlock.app.track("/OxfordAi/setting/open");
+//			mBlockRT.app.track("/OxfordAi/setting/open");
 		}
 		// -----------------------------
 		// Project Reverting
@@ -1139,7 +1144,7 @@ package {
 		}
 		
 		private function preDoRevert():void {
-			revertUndo = new ProjectIO(MBlock.app).encodeProjectAsZipFile(stagePane);
+			revertUndo = new ProjectIO(mBlockRT.app).encodeProjectAsZipFile(stagePane);
 			doRevert();
 		}
 	
